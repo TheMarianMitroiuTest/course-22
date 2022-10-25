@@ -1,10 +1,173 @@
 ## Practical with crmPack - template to start from
-
+#install.packages('Hmisc')
 ## load the package:
 library(crmPack)
+library(Hmisc)
 
 ## define the dose grid: please insert the correct numbers
-doseGrid <- seq(from=  , to=  , by=  )
+doseGrid <- seq(from= 40  , to= 200 , by= 10)
+
+data <- Data(x=c(40, 40, 50, 50),
+             y=c(0, 0, 1, 0),
+             doseGrid = doseGrid)
+
+data@ID
+data@cohort
+data@placebo
+summary(data)
+View(data)
+#describe(data)
+str(data)
+plot(data)
+#par(mfrow=c(2,2))
+
+
+sigma0 <- 1.0278
+sigma1 <- 1.65
+rho <- 0.5
+cov <- matrix(c(sigma0^2, rho * sigma0 * sigma1,
+              rho * sigma0 * sigma1, sigma1^2),
+              nrow = 2, ncol = 2)
+
+
+
+model <- LogisticLogNormal(mean = c(-4.47, 0.0033),
+                           cov = cov, refDose = 1)
+
+
+summary(model)
+
+mcmcoptions <- McmcOptions()
+
+emptyData <- Data(doseGrid = doseGrid)
+
+set.seed(12)
+
+priorSamples <- mcmc(emptyData, model, mcmcoptions)
+
+
+set.seed(92)
+postSamples <- mcmc(data, model, mcmcoptions)
+plot(priorSamples, 
+     model, emptyData)
+
+plot(postSamples, 
+     model, emptyData)
+
+
+increments <- IncrementsRelative(interval = 0,
+                                 increments = 1)
+
+maxDose(increments, data)
+
+
+ncrm <- NextBestNCRM(target = c(0.16, 0.33),
+                     overdose = c(0.33, 1),
+                     maxOverdoseProb = 0.25)
+
+
+doseRec <- nextBest(ncrm, 
+                    doselimit = maxDose(increments, data),
+                    postSamples, model, data)
+doseRec$value
+
+doseRec$plot
+
+cohort <- CohortSizeConst(size = 3)
+
+stop1 <- StoppingCohortsNearDose(nCohorts = 2, percentage = 0)
+
+stop2 <- StoppingMinCohorts(nCohorts = 6)
+
+stop3 <- StoppingMinPatients(nPatients = 30)
+
+stopRule <- (stop1 & stop2) | stop3
+
+stopTrial(stopRule, doseRec$value, postSamples, model, data)
+
+design <- Design(model = model,
+                 stopping = stopRule,
+                 increments = increments,
+                 nextBest= ncrm,
+                 cohortSize = cohort, 
+                 data = emptyData,
+                 startingDose = 40)
+                 
+scenario <- function(dose, ED50, alpha1) {
+  alpha0 <- qlogis(0.5) - alpha1 * log(ED50)
+  model@prob(dose, alpha0 = alpha0, alpha1 = alpha1)
+  }
+
+
+curve(scenario(dose, ED50 = 100, alpha1 = 25), from = 40, to = 200,
+      xname = "dose", ylab = "Scenario")
+
+curve(scenario(dose, ED50 = 200, alpha1 = 25), from = 40, to = 200,
+      xname = "dose", add = TRUE, col="red")
+
+lines(fit(priorSamples, model, emptyData), col= "blue")
+
+sims1 <- simulate(design, nsim = 10,
+                  seed = 456, truth = scenario, args = list(ED50 = 100, alpha1 = 25),
+                  mcmcoptions = mcmcoptions,
+                  parallel = TRUE)
+
+
+sims2 <- simulate(design, nsim = 10,
+                  seed = 457, truth = scenario, args = list(ED50 = 200, alpha1 = 25),
+                  mcmcoptions = mcmcoptions,
+                  parallel = TRUE)
+
+
+plot(sims1@data[[3]])
+plot(sims1)
+
+
+summary(sims1, truth = scenario,
+        target = ncrm@target, ED50 = 100, alpha1 = 25)
+
+
+PL <- 0.001
+data2 <- DataDual(x = c(PL, 25, 25, 25, PL, 50, 50, 50,
+                        PL, 100, 100, 100),
+                  y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+                  w = c(0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52,
+                        0.01, 0.71, 0.54, 0.45),
+                  cohort = c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
+                  doseGrid=c(PL, seq(25, 300, 25)), ID= 1:12, placebo = TRUE)
+
+plot(data2)
+
+emptydata2 <- DataDual(doseGrid = data@doseGrid, placebo = TRUE)
+
+
+DLTmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8),
+                              DLEweights = c(3, 3), DLEdose = c(25, 300),
+                              data = emptydata2)
+
+Effmodel <- Effloglog(Eff = c(1.223, 2.513),
+                      Effdose = c(25, 300),
+                      nu = c(a = 1, b = 0.025),
+                      data = emptydata2, c = 2)
+
+
+newDLTmodel <- update(object = DLTmodel, data = data2)
+newEffmodel <- update(object = Effmodel, data = data2)
+
+GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget = 0.35,
+                                DLEEndOfTrialtarget = 0.3)
+
+
+
+myIncrements <- IncrementsRelative(intervals = c(0, 125, 200),
+                                   increments = c(1, 0.75, 0.5))
+
+
+nextMaxDose <- maxDose(myIncrements, data2)
+
+
+doseRecGain <- nextBest()
+
 
 ## get the model and prior for the parameters:
 ## please insert the correct numbers into the c(,) notation 
