@@ -29,9 +29,11 @@ r1.2<-c(0.05,0.10,0.30,0.20,0.45,0.70)
 r1.3<-c(0.05,0.10,0.20,0.45,0.30,0.70)
 
 # Running simulation under scenarios
-pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
+nsim <- 100
+
+pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
 
 # Checking whether some scenarios are missing (all possible orderings)
 getwm(orders,r1.1)
@@ -43,9 +45,9 @@ r1.5<-c(0.05,  0.1, 0.30, 0.45, 0.20,  0.7)
 r1.6<-c(0.05,  0.1, 0.45, 0.30, 0.20,  0.7)
 
 # Additional simulations
-pocrm.sim(r=r1.4, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.5, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.6, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
+pocrm.sim(r=r1.4, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.5, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.6, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
 
 # First 3 orderings are more likely
 one<-1/(2*3 + 3)
@@ -53,12 +55,12 @@ prior.o<-c(2*one,2*one,2*one,one,one,one)
 sum(prior.o)
 
 # Run Simulations
-pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.4, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.5, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.6, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
+pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.4, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.5, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.6, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
 
 
 # Reduce number of possible orderings
@@ -77,9 +79,9 @@ r1.1<-c(0.05,0.10,0.20,0.30,0.45,0.70)
 r1.2<-c(0.05,0.10,0.30,0.20,0.45,0.70)
 r1.3<-c(0.05,0.10,0.20,0.45,0.30,0.70)
 
-pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
-pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=2000, tox.range=0.05)
+pocrm.sim(r=r1.1, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.2, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
+pocrm.sim(r=r1.3, alpha=alpha, prior.o=prior.o, x0=x0, stop=100, n=30, theta=0.30, nsim=nsim, tox.range=0.05)
 
 
 # Conduct of the study
@@ -121,3 +123,4 @@ fit<-pocrm.imp(alpha=alpha,prior.o=prior.o,theta=0.30,y=y,combos=combos)
 fit$ord.prob
 fit$ptox.est
 fit$dose.rec
+
